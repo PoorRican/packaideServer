@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 from utils import combine_svg, generate_sheet, perform_pack
@@ -26,5 +26,6 @@ def pack(request: NestingRequest):
 
         return packed_sheets
 
+    # return status code 400 if an error occurs
     except ValueError as e:
-        return {'error': e}
+        raise HTTPException(status_code=400, detail=str(e))

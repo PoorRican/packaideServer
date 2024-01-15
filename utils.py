@@ -1,4 +1,8 @@
 import xml.etree.ElementTree as et
+from typing import LiteralString
+
+NO_SHAPE_FITS: LiteralString = "Sheet size is too small for shapes"
+ONE_SHAPE_TOO_BIG: LiteralString = "One shape is too large for sheet"
 
 
 def _aggregate_svg_elements(svg_list: list[str]) -> et.Element:
@@ -118,9 +122,9 @@ def perform_pack(shapes: str, sheet: str) -> list[str]:
         if failed == 0:
             break
         elif failed == total_number_of_shapes:
-            raise ValueError("Sheet size is too small for shapes")
+            raise ValueError(NO_SHAPE_FITS)
         elif sheet_count > total_number_of_shapes:
-            raise ValueError("One shape is too large for sheet")
+            raise ValueError(ONE_SHAPE_TOO_BIG)
         else:
             sheet_count += 1
 
