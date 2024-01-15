@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from utils import combine_svg, generate_sheet, perform_packing
+from utils import combine_svg, generate_sheet, perform_pack
 
 app = FastAPI()
 
@@ -21,6 +21,6 @@ def pack(request: NestingRequest):
     shapes = combine_svg(request.shapes)
 
     # perform the packing operation
-    packed_sheets: list[str] = perform_packing(shapes, sheet)
+    packed_sheets: list[str] = perform_pack(shapes, sheet)
 
     return packed_sheets

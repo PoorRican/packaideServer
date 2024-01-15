@@ -79,7 +79,7 @@ def generate_sheet(width: float, height: float, dpi: int = 96) -> str:
     return sheet
 
 
-def perform_packing(shapes: str, sheet: str) -> list[str]:
+def perform_pack(shapes: str, sheet: str) -> list[str]:
     """ Perform the packing operation.
 
     The `packaide.pack` function is called with the given shapes and sheet. The resulting SVGs are returned as a list
@@ -88,7 +88,7 @@ def perform_packing(shapes: str, sheet: str) -> list[str]:
     Example:
         >>> shapes = '<svg><circle cx="50" cy="50" r="40" fill="red" /></svg>'
         >>> sheet = '<svg viewBox="0 0 1 1"></svg>'
-        >>> _ = perform_packing(shapes, sheet)
+        >>> _ = perform_pack(shapes, sheet)
     """
     import packaide
 
