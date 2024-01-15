@@ -21,6 +21,10 @@ def pack(request: NestingRequest):
     shapes = combine_svg(request.shapes)
 
     # perform the packing operation
-    packed_sheets: list[str] = perform_pack(shapes, sheet)
+    try:
+        packed_sheets: list[str] = perform_pack(shapes, sheet)
 
-    return packed_sheets
+        return packed_sheets
+
+    except ValueError as e:
+        return {'error': e}
