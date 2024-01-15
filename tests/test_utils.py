@@ -135,23 +135,33 @@ class TestPerformPacking(unittest.TestCase):
         self.assertEqual(expected_viewbox, output.attrib['viewBox'])
 
     def test_sheet_too_small(self):
-        """ Test that no shapes are placed when the sheet is too small """
+        """ Test that a `ValueError` is raised when sheet is too small to fit any shape """
         sheet = generate_sheet(1, 1, 1)
         shapes = _generate_shapes_with_viewbox()
 
-        outputs = perform_pack(shapes, sheet)
-        output_as_str = outputs[0]
-        output = ElementTree.fromstring(output_as_str)
+        with self.assertRaises(ValueError):
+            perform_pack(shapes, sheet)
 
-        self.assertEqual(0, len(output))
+    def test_one_shape_too_large(self):
+        """ Test that a `ValueError is raised when one shape is too large to fit onto the sheet """
+        sheet = generate_sheet(200, 200, 1)
 
-    @unittest.expectedFailure
+        shapes = """
+        <svg viewBox="0 0 1 1">
+            <rect height="100" width="100" />
+            <rect height="1000" width="1000" />
+        </svg>
+        """
+
+        with self.assertRaises(ValueError):
+            perform_pack(shapes, sheet)
+
     def test_correct_multiple_sheets(self):
         """ Test that multiple sheets are returned when shapes do not fit onto a single sheet """
         # shapes cannot fit onto a 100 x 100 sheet
         shapes = _generate_shapes_with_viewbox()
 
-        sheet = generate_sheet(100, 100, 1)
+        sheet = generate_sheet(125, 125, 1)
 
         outputs = perform_pack(shapes, sheet)
 
@@ -169,9 +179,6 @@ class TestPerformPacking(unittest.TestCase):
             shape_counter += len(output)
 
         self.assertEqual(number_of_shapes, shape_counter)
-
-
-
 
 
 if __name__ == '__main__':

@@ -85,22 +85,44 @@ def perform_pack(shapes: str, sheet: str) -> list[str]:
     The `packaide.pack` function is called with the given shapes and sheet. The resulting SVGs are returned as a list
     of strings.
 
+    Raises:
+        `ValueError` when:
+            - Sheet size is too small to fit any shape
+            - One shape is too large to fit onto sheet
+
     Example:
-        >>> shapes = '<svg><circle cx="50" cy="50" r="40" fill="red" /></svg>'
+        >>> shapes = '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="red" /></svg>'
         >>> sheet = '<svg viewBox="0 0 1 1"></svg>'
         >>> _ = perform_pack(shapes, sheet)
     """
     import packaide
 
-    results, _, _ = packaide.pack(
-        [sheet],
-        shapes,
-        tolerance=0.1,
-        offset=5,
-        partial_solution=True,
-        rotations=4,
-        persist=True
-    )
+    # get the number of shapes
+    shapes_as_xml = et.fromstring(shapes)
+    total_number_of_shapes = len(shapes_as_xml)
+
+    sheet_count = 1     # number of sheets to use
+
+    # this continues to run until there are no failed placed sheets
+    while True:
+        results, _, failed = packaide.pack(
+            [sheet] * sheet_count,
+            shapes,
+            tolerance=0.1,
+            offset=5,
+            partial_solution=True,
+            rotations=4,
+            persist=True
+        )
+
+        if failed == 0:
+            break
+        elif failed == total_number_of_shapes:
+            raise ValueError("Sheet size is too small for shapes")
+        elif sheet_count > total_number_of_shapes:
+            raise ValueError("One shape is too large for sheet")
+        else:
+            sheet_count += 1
 
     sheets: list[str] = []
     for _, out in results:
