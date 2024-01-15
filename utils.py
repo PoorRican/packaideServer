@@ -91,9 +91,9 @@ def perform_pack(shapes: str, sheet: str) -> list[str]:
             - One shape is too large to fit onto sheet
 
     Example:
-        >>> shapes = '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="red" /></svg>'
-        >>> sheet = '<svg viewBox="0 0 1 1"></svg>'
-        >>> _ = perform_pack(shapes, sheet)
+        >>> _shapes = '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="red" /></svg>'
+        >>> _sheet = '<svg viewBox="0 0 1 1"></svg>'
+        >>> _ = perform_pack(_shapes, _sheet)
     """
     import packaide
 
