@@ -1,6 +1,7 @@
-import packaide
 from fastapi import FastAPI
 from pydantic import BaseModel
+
+from utils import combine_svg, generate_sheet, perform_packing
 
 app = FastAPI()
 
@@ -8,29 +9,18 @@ app = FastAPI()
 class NestingRequest(BaseModel):
     height: float
     width: float
-    shapes: str
+    shapes: list[str]
 
 
 @app.post('/pack')
 def pack(request: NestingRequest):
-    sheet = """<svg
-       viewBox="0 0 {height} {width}"
-       version="1.1"
-       xmlns="http://www.w3.org/2000/svg"
-       xmlns:svg="http://www.w3.org/2000/svg" ></svg>""".format(height=request.height, width=request.width)
+    # create a template sheet
+    sheet = generate_sheet(width=request.width, height=request.height)
 
-    results, _, _ = packaide.pack(
-        [sheet],
-        request.shapes,
-        tolerance=0.1,
-        offset=5,
-        partial_solution=True,
-        rotations=4,
-        persist=True
-    )
+    # combine all shapes into one SVG
+    shapes = combine_svg(request.shapes)
 
-    sheets: list[str] = []
-    for _, out in results:
-        sheets.append(out)
+    # perform the packing operation
+    packed_sheets: list[str] = perform_packing(shapes, sheet)
 
-    return sheets
+    return packed_sheets

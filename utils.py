@@ -52,3 +52,58 @@ def combine_svg(svg_list: list[str]) -> str:
     combined = _set_viewbox(combined)
 
     return et.tostring(combined).decode('utf8')
+
+
+def generate_sheet(width: float, height: float, dpi: int = 96) -> str:
+    """ Generate an SVG sheet with a given height and width.
+
+    The sheet is returned as a string.
+
+    Parameters:
+        width (float): The width of the sheet in inches.
+        height (float): The height of the sheet in inches.
+        dpi (int): The DPI of the sheet. Defaults to 96.
+
+    Example:
+        >>> _: str = generate_sheet(100, 100)
+    """
+    pixel_width = width * dpi
+    pixel_height = height * dpi
+
+    sheet = """<svg
+       viewBox="0 0 {width} {height}"
+       version="1.1"
+       xmlns="http://www.w3.org/2000/svg"
+       xmlns:svg="http://www.w3.org/2000/svg" ></svg>""".format(width=pixel_width, height=pixel_height)
+
+    return sheet
+
+
+def perform_packing(shapes: str, sheet: str) -> list[str]:
+    """ Perform the packing operation.
+
+    The `packaide.pack` function is called with the given shapes and sheet. The resulting SVGs are returned as a list
+    of strings.
+
+    Example:
+        >>> shapes = '<svg><circle cx="50" cy="50" r="40" fill="red" /></svg>'
+        >>> sheet = '<svg viewBox="0 0 1 1"></svg>'
+        >>> _ = perform_packing(shapes, sheet)
+    """
+    import packaide
+
+    results, _, _ = packaide.pack(
+        [sheet],
+        shapes,
+        tolerance=0.1,
+        offset=5,
+        partial_solution=True,
+        rotations=4,
+        persist=True
+    )
+
+    sheets: list[str] = []
+    for _, out in results:
+        sheets.append(out)
+
+    return sheets
