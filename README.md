@@ -10,9 +10,9 @@ Once Docker is installed, the container is built with the following command. Thi
 docker build -t packaide_server .
 ```
 
-To run the container, use the following command:
+To run the container in the background, use the following command:
 ```bash
-docker run packaide_server
+docker run -d packaide_server
 ```
 
 ## Local Installation
