@@ -1,28 +1,32 @@
-FROM python:3.12
+FROM archlinux
 
 # Install dependencies
-# cmake is not listed in the dependencies but is required for the install
-RUN apt-get update && apt-get install -y git libcgal-dev cmake
+RUN pacman -Sy --noconfirm git python python-pip python-virtualenv clang cmake cgal
 
-# install packaide
-RUN git clone https://github.com/DanielLiamAnderson/Packaide /tmp/Packaide/
+# Setup virtualenv
+# There is a more elegant way to set up the virtualenv as per https://pythonspeed.com/articles/activate-virtualenv-dockerfile/
+ENV VIRTUAL_ENV=/opt/venv
+RUN python -m virtualenv ${VIRTUAL_ENV}
 
-RUN cd /tmp/Packaide && \
+# Install packaide
+RUN git clone https://github.com/DanielLiamAnderson/Packaide /opt/Packaide/
+RUN cd /opt/Packaide && \
     git checkout v2 && \
-    pip install -r requirements.txt && \
-    pip install --user .
+    ${VIRTUAL_ENV}/bin/pip install -r requirements.txt && \
+    ${VIRTUAL_ENV}/bin/pip install .
 
-# setup server
+# Setup server
 ENV DIR=/opt/packaideServer
 
 RUN mkdir ${DIR}
 RUN cd ${DIR}
 COPY ./requirements.txt ${DIR}/requirements.txt
 
-RUN pip install --no-cache-dir --upgrade -r ${DIR}/requirements.txt
+RUN ${VIRTUAL_ENV}/bin/pip install -r ${DIR}/requirements.txt
 
 # Copy over server files
 COPY ./main.py ${DIR}
 COPY ./utils.py ${DIR}
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
+WORKDIR ${DIR}
+CMD ["/opt/venv/bin/python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
