@@ -12,7 +12,7 @@ docker build -t packaide_server .
 
 To run the container in the background, use the following command:
 ```bash
-docker run -d packaide_server
+docker run -p 8000:8000 -d packaide_server
 ```
 
 ## Local Installation
