@@ -7,9 +7,17 @@ app = FastAPI()
 
 
 class NestingRequest(BaseModel):
+    """ A request to the Packaide server.
+
+    Each field is required. The `tolerance`, `offset`, and `rotations` fields *must* be passed
+    from the client.
+    """
     height: float
     width: float
     shapes: list[str]
+    tolerance: float
+    offset: float
+    rotations: int
 
 
 @app.post('/pack')
@@ -22,7 +30,10 @@ def pack(request: NestingRequest):
 
     # perform the packing operation
     try:
-        packed_sheets: list[str] = perform_pack(shapes, sheet)
+        packed_sheets: list[str] = perform_pack(shapes, sheet,
+                                                tolerance=request.tolerance,
+                                                offset=request.offset,
+                                                rotations=request.rotations)
 
         return packed_sheets
 

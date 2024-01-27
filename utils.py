@@ -83,11 +83,22 @@ def generate_sheet(width: float, height: float, dpi: int = 96) -> str:
     return sheet
 
 
-def perform_pack(shapes: str, sheet: str) -> list[str]:
+def perform_pack(shapes: str, sheet: str,
+                 tolerance: float,
+                 offset: float,
+                 rotations: int
+                 ) -> list[str]:
     """ Perform the packing operation.
 
     The `packaide.pack` function is called with the given shapes and sheet. The resulting SVGs are returned as a list
     of strings.
+
+    Parameters:
+        shapes (str): A single SVG string, or a list of SVG strings, to pack onto the sheet.
+        sheet (str): An SVG string representing the sheet to pack onto.
+        tolerance (float): The tolerance of the packing algorithm.
+        offset (float): The offset of the packing algorithm.
+        rotations (int): The number of rotations to use.
 
     Raises:
         `ValueError` when:
@@ -112,10 +123,10 @@ def perform_pack(shapes: str, sheet: str) -> list[str]:
         results, _, failed = packaide.pack(
             [sheet] * sheet_count,
             shapes,
-            tolerance=0.1,
-            offset=5,
+            tolerance=tolerance,
+            offset=offset,
             partial_solution=True,
-            rotations=4,
+            rotations=rotations,
             persist=True
         )
 
