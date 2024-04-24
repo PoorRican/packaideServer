@@ -15,6 +15,10 @@ RUN cd /opt/Packaide && \
     ${VIRTUAL_ENV}/bin/pip install -r requirements.txt && \
     ${VIRTUAL_ENV}/bin/pip install .
 
+# Remove unnecessary files
+RUN rm -rf /opt/Packaide
+RUN pacman -Rns --noconfirm git clang cmake
+
 # Setup server
 ENV DIR=/opt/packaideServer
 
