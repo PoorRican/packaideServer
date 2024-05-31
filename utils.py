@@ -127,7 +127,7 @@ def perform_pack(shapes: str, sheet: str,
             offset=offset,
             partial_solution=True,
             rotations=rotations,
-            persist=True
+            persist=False
         )
 
         if failed == 0:
