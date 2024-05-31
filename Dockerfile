@@ -1,12 +1,14 @@
-FROM archlinux
+FROM python:3.10-bookworm
 
 # Install dependencies
-RUN pacman -Sy --noconfirm git python python-pip python-virtualenv clang cmake cgal
+RUN pip install virtualenv
+RUN apt-get update
+RUN apt-get install git libcgal-dev -y
 
 # Setup virtualenv
 # There is a more elegant way to set up the virtualenv as per https://pythonspeed.com/articles/activate-virtualenv-dockerfile/
 ENV VIRTUAL_ENV=/opt/venv
-RUN python -m virtualenv ${VIRTUAL_ENV}
+RUN virtualenv ${VIRTUAL_ENV}
 
 # Install packaide
 RUN git clone https://github.com/DanielLiamAnderson/Packaide /opt/Packaide/
@@ -17,7 +19,7 @@ RUN cd /opt/Packaide && \
 
 # Remove unnecessary files
 RUN rm -rf /opt/Packaide
-RUN pacman -Rns --noconfirm git clang cmake
+RUN apt-get remove git clang cmake -y
 
 # Setup server
 ENV DIR=/opt/packaideServer
