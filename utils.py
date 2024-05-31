@@ -1,8 +1,7 @@
 import xml.etree.ElementTree as et
-from typing import LiteralString
 
-NO_SHAPE_FITS: LiteralString = "Sheet size is too small for shapes"
-ONE_SHAPE_TOO_BIG: LiteralString = "One shape is too large for sheet"
+NO_SHAPE_FITS = "Sheet size is too small for shapes"
+ONE_SHAPE_TOO_BIG = "One shape is too large for sheet"
 
 
 def _aggregate_svg_elements(svg_list: list[str]) -> et.Element:
